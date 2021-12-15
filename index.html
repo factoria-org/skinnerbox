@@ -1,0 +1,61 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="style.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.0-rc.0/web3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
+<script src="f0.js"></script>
+<script id="template" type="text/x-handlebars-template">
+  <img src="{{image}}">
+  <h1>{{title}}</h1>
+  <table class='invites'>
+  <tr>
+    <th>mint price</th>
+    <th>mint limit</th>
+    <th>Invite</th>
+  </tr>
+  {{#each items}}
+    <tr>
+      <td>{{eth}} ETH</td>
+      <td>{{limit}}</td>
+      <td><a class='btn' href="mint#address={{address}}&key={{key}}">Go</td</a></td>
+    </tr>
+  {{/each}}
+  </table>
+</script>
+<script>
+const f0 = new F0()
+const template = Handlebars.compile(document.querySelector("#template").innerHTML);
+document.addEventListener("DOMContentLoaded", async () => {
+  let config = await fetch("box.json").then((r) => {
+    return r.json()
+  })
+  await window.ethereum.send('eth_requestAccounts');
+  await f0.init({
+    web3: new Web3(window.ethereum),
+    contract: config.contract
+  })
+  const name = await f0.name()
+  const symbol = await f0.symbol()
+  const placeholder = await f0.placeholder()
+  const invites = await f0.myInvites()
+  document.querySelector(".box").innerHTML = template({
+    title: `${name} (${symbol}) Invite List`,
+    image: placeholder.converted.image,
+    items: Object.keys(invites).map((key, index) => {
+      return {
+        index: index,
+        address: config.contract,
+        key: key,
+        eth: invites[key].condition.converted.eth,
+        limit: invites[key].condition.converted.limit
+      }
+    })
+  })
+})
+</script>
+</head>
+<body>
+<div class='box'></div>
+</body>
+</html>

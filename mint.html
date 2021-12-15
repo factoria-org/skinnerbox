@@ -1,0 +1,98 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
+<script src="https://unpkg.com/nice-select2@1.0.0/dist/js/nice-select2.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" rel="stylesheet">
+<link href="https://unpkg.com/nice-select2@1.0.0/dist/css/nice-select2.css" rel="stylesheet">
+<link href="style.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.0-rc.0/web3.min.js"></script>
+<script src="f0.js"></script>
+<script id="template" type="text/x-handlebars-template">
+  <img src="{{image}}">
+  <h1><a href=".">{{title}}</a></h1>
+  <div class='label'>{{price}}</div>
+  <div class='label'>{{current}}/{{supply}}</div>
+  <div class='minter'>
+    <select id='count'>
+      <option value="" selected disabled hidden>Select mint count</option>
+      {{#each items}}
+      <option value={{count}}>{{count}}</option>
+      {{/each}}
+    </select>
+    <button id='mint'>Mint</button>
+  </div>
+  <div class='console'></div>
+  <div class='loading hidden'>
+    <i class="fa-solid fa-chevron-up fa-flip"></i> minting...
+  </div>
+</script>
+<script id="mint-template" type="text/x-handlebars-template">
+<table class='table'>
+<tr>
+  <th><img src="opensea.png"></th>
+  <th><img src="rarible.png"></th>
+</tr>
+{{#each items}}
+<tr>
+  <td><a class='token' target="_blank" href="{{opensea}}">token #{{tokenId}}</a></td>
+  <td><a class='token' target="_blank" href="{{rarible}}">token #{{tokenId}}</a></td>
+</tr>
+{{/each}}
+</table>
+</script>
+<script>
+const f0 = new F0()
+const { key, address } = f0.parseURL(location.href)
+const template = Handlebars.compile(document.querySelector("#template").innerHTML);
+const mintTemplate = Handlebars.compile(document.querySelector("#mint-template").innerHTML);
+document.addEventListener("DOMContentLoaded", async () => {
+  await window.ethereum.send('eth_requestAccounts');
+  await f0.init({
+    web3: new Web3(window.ethereum),
+    contract: address
+  })
+  let invite = await f0.invite(key)
+  let placeholder = await f0.placeholder()
+  const name = await f0.name()
+  const symbol = await f0.symbol()
+  const nextId = await f0.nextId()
+  const config = await f0.config()
+  let items = []
+  for(let i=1; i<=invite.condition.converted.limit; i++) {
+    items.push(i)
+  }
+  document.querySelector(".box").innerHTML = template({
+    image: placeholder.converted.image,
+    title: `${name} (${symbol})`,
+    items: items.map((item) => { return { count: item } }),
+    max: invite.condition.converted.limit,
+    price: `${invite.condition.converted.eth} ETH`,
+    current: nextId,
+    supply: config.converted.supply,
+    account: f0.account,
+    key: key,
+  })
+  NiceSelect.bind(document.querySelector("select"))
+  document.querySelector("#mint").addEventListener("click", async (e) => {
+    document.querySelector(".minter").classList.add("hidden")
+    document.querySelector(".loading").classList.remove("hidden")
+    let tokens = await f0.mint(key, document.querySelector("#count").value)
+    document.querySelector(".loading").classList.add("hidden")
+    document.querySelector(".console").innerHTML = mintTemplate({
+      items: tokens.map((token) => {
+        return {
+          opensea: token.links.opensea,
+          rarible: token.links.rarible,
+          tokenId: token.tokenId
+        }
+      })
+    })
+  })
+})
+</script>
+</head>
+<body>
+<div class='box'></div>
+</body>
+</html>

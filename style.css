@@ -1,0 +1,114 @@
+body {
+  font-family: Sans-serif;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgb(131,58,180);
+  background-image: linear-gradient(to right top, #d16ba5, #c777b9, #ba83ca, #aa8fd8, #9a9ae1, #8aa7ec, #79b3f4, #69bff8, #52cffe, #41dfff, #46eefa, #5ffbf1);
+  color: white;
+}
+.box {
+  max-width: 300px;
+  text-align: center;
+}
+.box > *, .minter > *{
+  display: block;
+  width: 100% !important;
+  margin-bottom: 10px;
+}
+.nice-select {
+  margin-bottom: 10px;
+  color: black;
+}
+.nice-select-dropdown {
+  width: 100%;
+}
+button {
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 10px;
+  border: none;
+}
+.container {
+  max-width: 800px;
+  margin: 50px auto;
+}
+a {
+  color: royalblue;
+  text-decoration: none;
+  display: block;
+}
+.label {
+  font-size: 18px;
+  font-weight: bold;
+}
+h1 {
+  margin: 0;
+  font-size: 30px;
+  box-sizing: border-box;
+  letter-spacing: -1px;
+}
+h1 a {
+  color: white;
+}
+.invite {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  text-align: left;
+  color: white;
+  font-size: 16px;
+}
+.invites a {
+  color: white;
+}
+.invites {
+}
+table {
+  width: 100%;
+  table-layout: fixed;
+  overflow-wrap: break-word;
+  display: table !important;
+  margin-top: 10px;
+}
+td, th {
+  padding: 5px;
+  font-size: 14px;
+}
+th {
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  border-top: 1px solid rgba(255,255,255,0.2);
+}
+tr {
+  width: 100%;
+  border-bottom: 1px solid white;
+}
+.btn {
+  background: rgba(0,0,0,0.1); 
+  padding: 5px 10px;
+  text-align: center;
+}
+.hidden {
+  display: none !important;
+}
+.loading {
+  padding: 20px;
+  box-sizing: border-box;
+  font-size: 15px;
+  background: rgba(255,255,255,0.1);
+  margin-top: 20px;
+  border-radius: 50px;
+}
+tr img {
+  height: 20px;
+}
+tr a {
+  color: white;
+}
+.token {
+  background: rgba(0,0,0,0.3);
+  padding: 5px;
+  text-align: center;
+  font-size: 12px;
+}
