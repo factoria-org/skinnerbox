@@ -18,7 +18,7 @@ You can try it out here: https://factoria-org.github.io/skinnerbox
 
 1. Go deploy an NFT contract with [Factoria](https://factoria.app/)
 2. Fork this repository
-3. Update the [box.json](box.json) to set your own contract address from step 1
+3. Update the [box.json](box.json) to set your own contract address from step 1, as well as set the network ("rinkeby" or "main")
 4. (optional) Customize style by changing the [style.css](style.css)
 5. Create github pages ([tutorial](https://dev.to/byteslash/getting-started-with-github-pages-4jpf))
 

@@ -7,7 +7,7 @@
 <link href="https://unpkg.com/nice-select2@1.0.0/dist/css/nice-select2.css" rel="stylesheet">
 <link href="style.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.0-rc.0/web3.min.js"></script>
-<script src="f0.js"></script>
+<script src="https://unpkg.com/f0js@0.0.12/dist/f0.js"></script>
 <script id="template" type="text/x-handlebars-template">
   <img src="{{image}}">
   <h1><a href=".">{{title}}</a></h1>
@@ -48,47 +48,55 @@ const template = Handlebars.compile(document.querySelector("#template").innerHTM
 const mintTemplate = Handlebars.compile(document.querySelector("#mint-template").innerHTML);
 document.addEventListener("DOMContentLoaded", async () => {
   await window.ethereum.send('eth_requestAccounts');
-  await f0.init({
-    web3: new Web3(window.ethereum),
-    contract: address
+  let c = await fetch("box.json").then((r) => {
+    return r.json()
   })
-  let invite = await f0.invite(key)
-  let placeholder = await f0.placeholder()
-  const name = await f0.name()
-  const symbol = await f0.symbol()
-  const nextId = await f0.nextId()
-  const config = await f0.config()
-  let items = []
-  for(let i=1; i<=invite.condition.converted.limit; i++) {
-    items.push(i)
-  }
-  document.querySelector(".box").innerHTML = template({
-    image: placeholder.converted.image,
-    title: `${name} (${symbol})`,
-    items: items.map((item) => { return { count: item } }),
-    max: invite.condition.converted.limit,
-    price: `${invite.condition.converted.eth} ETH`,
-    current: nextId,
-    supply: config.converted.supply,
-    account: f0.account,
-    key: key,
-  })
-  NiceSelect.bind(document.querySelector("select"))
-  document.querySelector("#mint").addEventListener("click", async (e) => {
-    document.querySelector(".minter").classList.add("hidden")
-    document.querySelector(".loading").classList.remove("hidden")
-    let tokens = await f0.mint(key, document.querySelector("#count").value)
-    document.querySelector(".loading").classList.add("hidden")
-    document.querySelector(".console").innerHTML = mintTemplate({
-      items: tokens.map((token) => {
-        return {
-          opensea: token.links.opensea,
-          rarible: token.links.rarible,
-          tokenId: token.tokenId
-        }
+  try {
+    await f0.init({
+      web3: new Web3(window.ethereum),
+      contract: address,
+      network: c.network
+    })
+    let invite = await f0.invite(key)
+    let placeholder = await f0.placeholder()
+    const name = await f0.name()
+    const symbol = await f0.symbol()
+    const nextId = await f0.nextId()
+    const config = await f0.config()
+    let items = []
+    for(let i=1; i<=invite.condition.converted.limit; i++) {
+      items.push(i)
+    }
+    document.querySelector(".box").innerHTML = template({
+      image: placeholder.converted.image,
+      title: `${name} (${symbol})`,
+      items: items.map((item) => { return { count: item } }),
+      max: invite.condition.converted.limit,
+      price: `${invite.condition.converted.eth} ETH`,
+      current: nextId,
+      supply: config.converted.supply,
+      account: f0.account,
+      key: key,
+    })
+    NiceSelect.bind(document.querySelector("select"))
+    document.querySelector("#mint").addEventListener("click", async (e) => {
+      document.querySelector(".minter").classList.add("hidden")
+      document.querySelector(".loading").classList.remove("hidden")
+      let tokens = await f0.mint(key, document.querySelector("#count").value)
+      document.querySelector(".loading").classList.add("hidden")
+      document.querySelector(".console").innerHTML = mintTemplate({
+        items: tokens.map((token) => {
+          return {
+            opensea: token.links.opensea,
+            rarible: token.links.rarible,
+            tokenId: token.tokenId
+          }
+        })
       })
     })
-  })
+  } catch (e) {
+    document.querySelector(".box").innerHTML = `<h1>${e.message.toLowerCase()}</h1>`
+  }
 })
 </script>
 </head>
