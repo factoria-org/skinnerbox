@@ -82,17 +82,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.querySelector("#mint").addEventListener("click", async (e) => {
       document.querySelector(".minter").classList.add("hidden")
       document.querySelector(".loading").classList.remove("hidden")
-      let tokens = await f0.mint(key, document.querySelector("#count").value)
-      document.querySelector(".loading").classList.add("hidden")
-      document.querySelector(".console").innerHTML = mintTemplate({
-        items: tokens.map((token) => {
-          return {
-            opensea: token.links.opensea,
-            rarible: token.links.rarible,
-            tokenId: token.tokenId
-          }
+      let count = parseInt(document.querySelector("#count").value)
+      if (count === 0) {
+        alert("Please enter a number greater than 0")
+      } else {
+        let tokens = await f0.mint(key, count)
+        document.querySelector(".loading").classList.add("hidden")
+        document.querySelector(".console").innerHTML = mintTemplate({
+          items: tokens.map((token) => {
+            return {
+              opensea: token.links.opensea,
+              rarible: token.links.rarible,
+              tokenId: token.tokenId
+            }
+          })
         })
-      })
+      }
     })
   } catch (e) {
     document.querySelector(".box").innerHTML = `<h1>${e.message.toLowerCase()}</h1>`
