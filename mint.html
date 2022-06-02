@@ -56,11 +56,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     let inv = await fetch("invites.json").then((res) => { return res.json() }).catch((e) => { })
     console.log("invites", inv)
 
+    let _config = await fetch("config.json").then((res) => { return res.json() }).catch((e) => { })
+    console.log("config", _config)
+
+    let _placeholder = await fetch("placeholder.json").then((res) => { return res.json() }).catch((e) => { })
+    console.log("placeholder", _placeholder)
+
+
     await f0.init({
       web3: new Web3(window.ethereum),
       contract: address,
       network: c.network,
-      invites: inv
+      invites: inv,
+      config: _config,
+      placeholder: _placeholder
     })
     let invite = await f0.invite(key)
     let placeholder = await f0.placeholder()
