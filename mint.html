@@ -52,10 +52,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     return r.json()
   })
   try {
+
+    let invites = await fetch("invites.json").then((res) => { return res.json() }).catch((e) => { })
+    console.log("invites", invites)
+
     await f0.init({
       web3: new Web3(window.ethereum),
       contract: address,
-      network: c.network
+      network: c.network,
+      invites
     })
     let invite = await f0.invite(key)
     let placeholder = await f0.placeholder()

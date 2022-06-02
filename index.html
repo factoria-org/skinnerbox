@@ -35,10 +35,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   console.log("net = ", net)
   await window.ethereum.send('eth_requestAccounts');
   try {
+    let invites = await fetch("invites.json").then((res) => { return res.json() }).catch((e) => { })
+    console.log("invites", invites)
     await f0.init({
       web3: web3,
       contract: config.contract,
-      network: config.network
+      network: config.network,
+      invites
     })
     const name = await f0.name()
     const symbol = await f0.symbol()
