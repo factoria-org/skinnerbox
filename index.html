@@ -47,9 +47,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const symbol = await f0.symbol()
     const placeholder = await f0.placeholder()
     const invites = await f0.myInvites()
+    let image = (cached && cached[placeholder.converted.image] ? cached[placeholder.converted.image] : placeholder.converted.iamge)
     document.querySelector(".box").innerHTML = template({
       title: `${name} (${symbol}) Invite List`,
-      image: placeholder.converted.image,
+      image,
       items: Object.keys(invites).map((key, index) => {
         return {
           index: index,

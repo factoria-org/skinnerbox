@@ -70,8 +70,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     for(let i=1; i<=invite.condition.converted.limit; i++) {
       items.push(i)
     }
+    let image = (cached && cached[placeholder.converted.image] ? cached[placeholder.converted.image] : placeholder.converted.iamge)
     document.querySelector(".box").innerHTML = template({
-      image: placeholder.converted.image,
+      image: image,
       title: `${name} (${symbol})`,
       items: items.map((item) => { return { count: item } }),
       max: invite.condition.converted.limit,
