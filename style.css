@@ -115,4 +115,6 @@ tr a {
   padding: 5px;
   text-align: center;
   font-size: 12px;
+  text-transform: uppercase;
+  font-weight: bold;
 }
