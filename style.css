@@ -10,7 +10,7 @@ body {
   height: 100%;
 }
 .box {
-  max-width: 300px;
+  max-width: 350px;
   text-align: center;
 }
 .box > *, .minter > *{
@@ -49,6 +49,7 @@ h1 {
   font-size: 30px;
   box-sizing: border-box;
   letter-spacing: -1px;
+  text-align: left;
 }
 h1 a {
   color: white;
@@ -89,6 +90,8 @@ tr {
   background: rgba(0,0,0,0.1); 
   padding: 5px 10px;
   text-align: center;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 .hidden {
   display: none !important;
