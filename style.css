@@ -30,14 +30,14 @@ button {
   color: white;
   padding: 10px;
   border: none;
+  text-decoration: none;
 }
 .container {
   max-width: 800px;
   margin: 50px auto;
 }
 a {
-  color: royalblue;
-  text-decoration: none;
+  color: white;
   display: block;
 }
 .label {
@@ -53,6 +53,7 @@ h1 {
 }
 h1 a {
   color: white;
+  text-decoration: none;
 }
 .invite {
   overflow-wrap: break-word;
@@ -92,6 +93,7 @@ tr {
   text-align: center;
   font-weight: bold;
   text-transform: uppercase;
+  text-decoration: none;
 }
 .hidden {
   display: none !important;
@@ -117,4 +119,22 @@ tr a {
   font-size: 12px;
   text-transform: uppercase;
   font-weight: bold;
+}
+.power {
+  margin-top: 20px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255255,255,0.1);
+}
+.line {
+  margin: 20px 0;
+}
+.line a {
+  font-size: 12px;
+}
+.b {
+  font-weight: bold;
+  text-transform: uppercase;
+  padding-left: 5px;
+  border-left: 10px solid white;
+  margin-bottom: 5px;
 }

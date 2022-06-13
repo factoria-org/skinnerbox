@@ -6,6 +6,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.0-rc.0/web3.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
 <script src="https://unpkg.com/f0js/dist/f0.js"></script>
+<script src="handleerror.js"></script>
 <script id="template" type="text/x-handlebars-template">
   <img src="{{image}}">
   <h1>{{title}}</h1>
@@ -23,6 +24,16 @@
     </tr>
   {{/each}}
   </table>
+  <div class='power'>
+    <div class='line'>
+      <div class='b'>verified contract</div>
+      <a target="_blank" href="{{etherscan}}">{{contract}}</a>
+    </div>
+    <div class='line'>
+      <div class='b'>collection explorer</div>
+      <a target="_blank" href="https://open.factoria.app/contract/#{{contract}}">Factoria</a>
+    </div>
+  </div>
 </script>
 <script>
 const f0 = new F0()
@@ -33,7 +44,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     return r.json()
   })
   let net = await web3.eth.getChainId()
-  console.log("net = ", net)
+  let netPrefix = (net.toString() === "4" ? "rinkeby." : "")
+  let etherscan = `https://${netPrefix}etherscan.io/address/${config.contract}#code`
   await window.ethereum.send('eth_requestAccounts');
   try {
     let cached = null
@@ -52,6 +64,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.querySelector(".box").innerHTML = template({
       title: `${name} (${symbol}) Invite List`,
       image,
+      etherscan,
+      contract: config.contract,
       items: Object.keys(invites).map((key, index) => {
         return {
           index: index,
@@ -63,7 +77,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       })
     })
   } catch (e) {
-    document.querySelector(".box").innerHTML = `<h1>${e.message.toLowerCase()}</h1>`
+    document.querySelector(".box").innerHTML = `<h1>${e.message}</h1>`
   }
 })
 </script>

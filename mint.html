@@ -9,6 +9,7 @@
 <link href="custom.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.0-rc.0/web3.min.js"></script>
 <script src="https://unpkg.com/f0js/dist/f0.js"></script>
+<script src="handleerror.js"></script>
 <script id="template" type="text/x-handlebars-template">
   <img src="{{image}}">
   <h1><a href=".">{{title}}</a></h1>
@@ -26,6 +27,16 @@
   <div class='console'></div>
   <div class='loading hidden'>
     <i class="fa-solid fa-chevron-up fa-flip"></i> minting...
+  </div>
+  <div class='power'>
+    <div class='line'>
+      <div class='b'>verified contract</div>
+      <a target="_blank" href="{{etherscan}}">{{contract}}</a>
+    </div>
+    <div class='line'>
+      <div class='b'>collection explorer</div>
+      <a target="_blank" href="https://open.factoria.app/contract/#{{contract}}">Factoria</a>
+    </div>
   </div>
 </script>
 <script id="mint-template" type="text/x-handlebars-template">
@@ -46,6 +57,7 @@
 </script>
 <script>
 const f0 = new F0()
+const web3= new Web3(window.ethereum)
 const { key, address } = f0.parseURL(location.href)
 const template = Handlebars.compile(document.querySelector("#template").innerHTML);
 const mintTemplate = Handlebars.compile(document.querySelector("#mint-template").innerHTML);
@@ -56,9 +68,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   })
   let cached = null
   cached = await fetch("cached.json").then((res) => { return res.json() }).catch((e) => { })
+  let net = await web3.eth.getChainId()
+  let netPrefix = (net.toString() === "4" ? "rinkeby." : "")
+  console.log("c", c, netPrefix)
+  let etherscan = `https://${netPrefix}etherscan.io/address/${c.contract}#code`
   try {
     await f0.init({
-      web3: new Web3(window.ethereum),
+      web3,
       contract: address,
       network: c.network,
       cached,
@@ -76,6 +92,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     let image = (cached && cached[placeholder.converted.image] ? cached[placeholder.converted.image] : placeholder.converted.image)
     document.querySelector(".box").innerHTML = template({
       image: image,
+      etherscan,
+      contract: c.contract,
       title: `${name} (${symbol})`,
       items: items.map((item) => { return { count: item } }),
       max: invite.condition.converted.limit,
@@ -93,21 +111,25 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (count === 0) {
         alert("Please enter a number greater than 0")
       } else {
-        let tokens = await f0.mint(key, count)
-        document.querySelector(".loading").classList.add("hidden")
-        document.querySelector(".console").innerHTML = mintTemplate({
-          items: tokens.map((token) => {
-            let i = { tokenId: token.tokenId }
-            if (token.links.opensea) i.opensea = token.links.opensea
-            if (token.links.rarible) i.rarible = token.links.rarible
-            if (token.links.looksrare) i.looksrare = token.links.looksrare
-            return i
+        try {
+          let tokens = await f0.mint(key, count)
+          document.querySelector(".loading").classList.add("hidden")
+          document.querySelector(".console").innerHTML = mintTemplate({
+            items: tokens.map((token) => {
+              let i = { tokenId: token.tokenId }
+              if (token.links.opensea) i.opensea = token.links.opensea
+              if (token.links.rarible) i.rarible = token.links.rarible
+              if (token.links.looksrare) i.looksrare = token.links.looksrare
+              return i
+            })
           })
-        })
+        } catch (e) {
+          document.querySelector(".box").innerHTML = `<h1>${handleError(e.message)}</h1>`
+        }
       }
     })
   } catch (e) {
-    document.querySelector(".box").innerHTML = `<h1>${e.message.toLowerCase()}</h1>`
+    document.querySelector(".box").innerHTML = `<h1>${e.message}</h1>`
   }
 })
 </script>
