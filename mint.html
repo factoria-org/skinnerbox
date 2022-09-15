@@ -69,7 +69,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   let cached = null
   cached = await fetch("cached.json").then((res) => { return res.json() }).catch((e) => { })
   let net = await web3.eth.getChainId()
-  let netPrefix = (net.toString() === "4" ? "rinkeby." : "")
+  let n = {
+    4: "rinkeby.",
+    1: "",
+    5: "goerli."
+  }
+  let netPrefix = n[net]
   console.log("c", c, netPrefix)
   let etherscan = `https://${netPrefix}etherscan.io/address/${c.contract}#code`
   try {

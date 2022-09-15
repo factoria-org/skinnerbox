@@ -44,7 +44,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     return r.json()
   })
   let net = await web3.eth.getChainId()
-  let netPrefix = (net.toString() === "4" ? "rinkeby." : "")
+  let n = {
+    4: "rinkeby.",
+    1: "",
+    5: "goerli."
+  }
+  let netPrefix = n[net]
   let etherscan = `https://${netPrefix}etherscan.io/address/${config.contract}#code`
   await window.ethereum.send('eth_requestAccounts');
   try {
